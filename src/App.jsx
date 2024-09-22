@@ -11,8 +11,6 @@ function App() {
   const { theme } = useTheme();
   const [isActive, setIsActive] = React.useState("user");
   const { user } = useAuth();
-
-  console.log(user);
   
   // Check for small screen size (e.g., 768px or below)
   let isMobile = window.innerWidth <= 768;

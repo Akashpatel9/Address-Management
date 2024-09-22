@@ -9,19 +9,18 @@ export default function AddAddress() {
   const { register, handleSubmit, reset } = useForm();
   const { user, saveUser } = useAuth();
 
-  const onSubmit =async (data) => {
+  const onSubmit = async (data) => {
     try {
-      const resp = await addAddress(data, user.data.email).then((data) => {
-        saveUser(data);
-        reset({
-            addressName: "",
-            address: "",
-            addressCity: "",
-            addressState: "",
-            addressZipCode: "",
-          })
-        alert("Address added successfully");
-      })
+      const resp = await addAddress(data, user.data.email);
+      saveUser(resp);
+      reset({
+        addressName: "",
+        address: "",
+        addressCity: "",
+        addressState: "",
+        addressZipCode: "",
+      });
+      alert("Address added successfully");
     } catch (error) {
       alert(error);
     }
@@ -31,66 +30,34 @@ export default function AddAddress() {
     <div style={styles.container}>
       <div>
         <h1 style={{ color: theme.text }}>Location</h1>
-        <p style={{ color: theme.text, opacity: "0.6" }}>Add your location</p>
+        <p style={{ color: theme.text, opacity: "0.8" }}>Add your location</p>
       </div>
-      <div style={{ height: "50%" }}>
+      <div style={{ height: "auto" }}>
         <form onSubmit={handleSubmit(onSubmit)} style={styles.form}>
-          <div>
-            <label style={{ color: theme.text, opacity: "0.8" }}>
-              Name of Location
-            </label>
-            <br />
-            <input
-              {...register("addressName")}
-              style={styles.input(theme)}
-            />
+          <div style={styles.inputGroup}>
+            <label style={{ color: theme.text, opacity: "0.9" }}>Name of Location</label>
+            <input {...register("addressName")} style={styles.input(theme)} />
           </div>
-          <div>
-            <label style={{ color: theme.text, opacity: "0.8" }}>
-              Address
-            </label>
-            <br />
-            <input
-              {...register("address")}
-              style={styles.input(theme)}
-            />
+          <div style={styles.inputGroup}>
+            <label style={{ color: theme.text, opacity: "0.9" }}>Address</label>
+            <input {...register("address")} style={styles.input(theme)} />
           </div>
-          <div>
-            <label style={{ color: theme.text, opacity: "0.8" }}>
-              State
-            </label>
-            <br />
-            <input
-              {...register("addressState")}
-              style={styles.input(theme)}
-            />
+          <div style={styles.inputGroup}>
+            <label style={{ color: theme.text, opacity: "0.9" }}>State</label>
+            <input {...register("addressState")} style={styles.input(theme)} />
           </div>
           <div style={styles.flexRow}>
-            <div>
-              <label style={{ color: theme.text, opacity: "0.8" }}>City</label>
-              <br />
-              <input
-                {...register("addressCity")}
-                style={styles.smallInput(theme)}
-              />
+            <div style={styles.inputGroup}>
+              <label style={{ color: theme.text, opacity: "0.9" }}>City</label>
+              <input {...register("addressCity")} style={styles.smallInput(theme)} />
             </div>
-            <div>
-              <label style={{ color: theme.text, opacity: "0.8" }}>
-                Zip Code
-              </label>
-              <br />
-              <input
-                {...register("addressZipCode")}
-                style={styles.smallInput(theme)}
-              />
+            <div style={styles.inputGroup}>
+              <label style={{ color: theme.text, opacity: "0.9" }}>Zip Code</label>
+              <input {...register("addressZipCode")} style={styles.smallInput(theme)} />
             </div>
           </div>
           <div>
-            <input
-              type="submit"
-              value="Submit"
-              style={styles.submitButton(theme)}
-            />
+            <input type="submit" value="Submit" style={styles.submitButton(theme)} />
           </div>
         </form>
       </div>
@@ -105,38 +72,51 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     gap: "40px",
-    paddingInline: "20px",
+    padding: "20px",
+    margin: "auto auto",
+    background: "#2E3B4E", // Darker background
+    borderRadius: "10px",
+    boxShadow: "0 2px 10px rgba(0, 0, 0, 0.2)",
   },
   form: {
     display: "flex",
     flexDirection: "column",
     gap: "20px",
   },
+  inputGroup: {
+    display: "flex",
+    flexDirection: "column",
+  },
   input: (theme) => ({
     color: '#424056',
     outline: "none",
-    border: "none",
+    border: "1px solid #6C757D", // Gray border
     height: "40px",
-    width: "100%", // Full width for responsiveness
-    background: "#e9e9e9",
+    width: "100%",
+    background: "#e0e0e0", // Lighter gray
     borderRadius: "8px",
     paddingInline: "10px",
+    transition: "border-color 0.3s",
+    ':focus': {
+      borderColor: theme.buttonColor, // Highlight border on focus
+    },
   }),
   smallInput: (theme) => ({
     color: '#424056',
     outline: "none",
-    border: "none",
+    border: "1px solid #6C757D",
     height: "40px",
-    width: "100%", // Full width inside flex container
-    background: "#e9e9e9",
+    width: "100%",
+    background: "#e0e0e0",
     borderRadius: "8px",
     paddingInline: "10px",
   }),
   flexRow: {
     display: "flex",
     flexDirection: "row",
+    justifyContent: "space-between",
     gap: "10px",
-    flexWrap: "wrap", // Allows elements to wrap on smaller screens
+    flexWrap: "wrap",
   },
   submitButton: (theme) => ({
     backgroundColor: theme.buttonColor,
@@ -144,10 +124,13 @@ const styles = {
     outline: "none",
     border: "none",
     height: "40px",
-    width: "100%", // Full width for the button
-    background: "#e9e9e9",
+    width: "100%",
     borderRadius: "8px",
     fontWeight: "700",
     cursor: "pointer",
+    transition: "background-color 0.3s",
+    ':hover': {
+      backgroundColor: theme.buttonHoverColor, // Darker shade on hover
+    },
   }),
 };

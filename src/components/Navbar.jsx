@@ -19,7 +19,7 @@ function Navbar() {
         zIndex: "99"
       }}
     >
-      <h3 style={{ color: theme.text }}>Address Store</h3>
+      <h3 style={{ color: theme.text }}>My Address Hub</h3>
       <button
         onClick={() => toggleTheme()}
         style={{

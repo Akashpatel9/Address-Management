@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useTheme } from "../context/themeContext";
 import { useAuth } from "../context/userContext";
 import { deleteAddress, updateAddress } from "../apiCalls/apiCalls";
@@ -6,12 +6,24 @@ import { useForm } from "react-hook-form";
 
 export default function AllAddress({ addresses, onEdit, onDelete }) {
   const { theme } = useTheme();
-  const {user, saveUser} = useAuth()
+  const { user, saveUser } = useAuth();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [currentAddress, setCurrentAddress] = useState(null);
   const [addressToDelete, setAddressToDelete] = useState(null);
-  const { register, handleSubmit, reset } = useForm();
+  const { register, handleSubmit, reset, setValue } = useForm();
+
+  useEffect(() => {
+    if (currentAddress) {
+      reset({
+        addressName: currentAddress.addressName,
+        address: currentAddress.address,
+        addressCity: currentAddress.addressCity,
+        addressState: currentAddress.addressState,
+        addressZipCode: currentAddress.addressZipCode,
+      });
+    }
+  }, [currentAddress, reset]);
 
   const handleEditClick = (address) => {
     setCurrentAddress(address);
@@ -23,94 +35,46 @@ export default function AllAddress({ addresses, onEdit, onDelete }) {
     setIsDeleteModalOpen(true);
   };
 
-  const handleModalSubmit = async(data) => {
+  const handleModalSubmit = async (data) => {
     try {
-      data.id = currentAddress._id
-      const resp = await updateAddress(data, user.data.email).then((data) => {
-        saveUser(data)
-        setCurrentAddress(null)
-        setIsEditModalOpen(false)
-        reset({
-          addressName: "",
-          address: "",
-          addressCity: "",
-          addressState: "",
-          addressZipCode: "",
-          id: "",
-        })
-      })
+      data.id = currentAddress._id;
+      const resp = await updateAddress(data, user.data.email);
+      saveUser(resp);
+      setCurrentAddress(null);
+      setIsEditModalOpen(false);
     } catch (error) {
-      alert(error)
+      alert(error);
     }
   };
 
-  const handleDeleteConfirm = async(id) => {
+  const handleDeleteConfirm = async () => {
     try {
-      const resp = await deleteAddress(addressToDelete._id, user.data.email).then((data) => {
-        saveUser(data)
-        setAddressToDelete(null)
-        setIsDeleteModalOpen(false)
-      })
+      const resp = await deleteAddress(addressToDelete._id, user.data.email);
+      saveUser(resp);
+      setAddressToDelete(null);
+      setIsDeleteModalOpen(false);
     } catch (error) {
-      alert(error)
+      alert(error);
     }
-  };
-
-  const handleInputChange = (e) => {
-    setCurrentAddress({
-      ...currentAddress,
-      [e.target.name]: e.target.value,
-    });
   };
 
   return (
-    <div
-      style={{
-        height: "100%",
-        width: "100%",
-        paddingInline: "5%",
-        paddingBottom: "5%",
-      }}
-    >
+    <div style={{ height: "100%", width: "100%", paddingInline: "5%", paddingBottom: "5%" }}>
       <div>
         <h1 style={{ color: theme.text }}>Your Addresses</h1>
       </div>
       <br />
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
-          gap: "20px",
-        }}
-      >
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))", gap: "20px" }}>
         {addresses.map((address, index) => (
           <div key={index} style={styles.card}>
             <h2 style={{ color: '#424056' }}>{address.addressName}</h2>
-            <p style={{ color: '#424056' }}>
-              <strong>Street:</strong> {address.address}
-            </p>
-            <p style={{ color: '#424056' }}>
-              <strong>City:</strong> {address.addressCity}
-            </p>
-            <p style={{ color: '#424056' }}>
-              <strong>State:</strong> {address.addressState}
-            </p>
-            <p style={{ color: '#424056' }}>
-              <strong>Zip Code:</strong> {address.addressZipCode}
-            </p>
+            <p style={{ color: '#424056' }}><strong>Street:</strong> {address.address}</p>
+            <p style={{ color: '#424056' }}><strong>City:</strong> {address.addressCity}</p>
+            <p style={{ color: '#424056' }}><strong>State:</strong> {address.addressState}</p>
+            <p style={{ color: '#424056' }}><strong>Zip Code:</strong> {address.addressZipCode}</p>
             <div style={styles.buttonContainer}>
-              <button
-                style={styles.button}
-                onClick={() => handleEditClick(address)}
-              >
-                Edit
-              </button>
-              <button
-                style={styles.button}
-                onClick={() => handleDeleteClick(address)}
-              >
-                Delete
-              </button>
+              <button style={styles.button} onClick={() => handleEditClick(address)}>Edit</button>
+              <button style={styles.button} onClick={() => handleDeleteClick(address)}>Delete</button>
             </div>
           </div>
         ))}
@@ -123,38 +87,23 @@ export default function AllAddress({ addresses, onEdit, onDelete }) {
             <form onSubmit={handleSubmit(handleModalSubmit)}>
               <label>
                 Name:
-                <input
-                  {...register("addressName")}
-                  style={styles.input}
-                />
+                <input {...register("addressName")} style={styles.input} />
               </label>
               <label>
                 Street:
-                <input
-                  {...register("address")}
-                  style={styles.input}
-                />
+                <input {...register("address")} style={styles.input} />
               </label>
               <label>
                 City:
-                <input
-                  {...register("addressCity")}
-                  style={styles.input}
-                />
+                <input {...register("addressCity")} style={styles.input} />
               </label>
               <label>
                 State:
-                <input
-                  {...register("addressState")}
-                  style={styles.input}
-                />
+                <input {...register("addressState")} style={styles.input} />
               </label>
               <label>
                 Zip Code:
-                <input
-                  {...register("addressZipCode")}
-                  style={styles.input}
-                />
+                <input {...register("addressZipCode")} style={styles.input} />
               </label>
               <div style={styles.modalButtonContainer}>
                 <button type="button" onClick={() => setIsEditModalOpen(false)} style={styles.modalButton}>
@@ -178,7 +127,7 @@ export default function AllAddress({ addresses, onEdit, onDelete }) {
               <button type="button" onClick={() => setIsDeleteModalOpen(false)} style={styles.modalButton}>
                 Cancel
               </button>
-              <button type="button" onClick={() => handleDeleteConfirm()} style={styles.modalButton}>
+              <button type="button" onClick={handleDeleteConfirm} style={styles.modalButton}>
                 Delete
               </button>
             </div>
