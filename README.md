@@ -1,4 +1,3 @@
-Here's an updated README for your Address Management project, reflecting the use of the MERN stack:
 
 ---
 
