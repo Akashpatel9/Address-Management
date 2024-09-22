@@ -1,6 +1,3 @@
-
----
-
 # Address Management
 
 ## Overview
@@ -43,21 +40,27 @@ The Address Management application is a user-friendly platform that allows users
    npm install
    ```
 
-3. Configure your database connection in the backend as needed.
+3. Create a `.env` file in the `backend` directory with the necessary environment variables, such as:
+   ```env
+   PORT=3000
+   DB_URL="your_mongo_db_connection_string_here"
+   ```
 
-4. Run the backend server:
+4. Configure your backend code to use the environment variables from the `.env` file.
+
+5. Run the backend server:
    ```bash
    cd backend
    node app.js
    ```
 
-5. In another terminal, run the frontend:
+6. In another terminal, run the frontend:
    ```bash
    cd frontend
    npm start
    ```
 
-6. Access the application in your browser at `http://localhost:3000` (or your configured port).
+7. Access the application in your browser at `http://localhost:3000` (or your configured port).
 
 ## API Endpoints
 
@@ -78,4 +81,4 @@ This project is licensed under the MIT License.
 ## Contact
 
 - **GitHub**: [Akash Patel](https://github.com/Akashpatel9)
-- **Email**: akashsp9893@example.com
+- **Email**: akashsp9893@gmail.com
